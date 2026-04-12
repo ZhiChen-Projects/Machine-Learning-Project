@@ -72,7 +72,7 @@ fn = np.sum((predictions == -1) & (y_test == 1))
 precision = tp / (tp + fp) if (tp + fp) > 0 else 0
 recall = tp / (tp + fn) if (tp + fn) > 0 else 0
 
-print("\n Results:\n")
+print("\Results:\n")
 print(f"Accuracy:  {accuracy:.4f}")
 print(f"Precision: {precision:.4f}")
 print(f"Recall:    {recall:.4f}")
