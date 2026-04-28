@@ -2,6 +2,9 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
+from dataset import load_data
+
+
 def one_vs_rest_encoding(y, digit=1):
     return np.where(y == digit, 1, -1)
 
@@ -15,12 +18,18 @@ def svm_objective(w, X, y, lambda1=0.08):
     return result
 
 def rbf_kernel(x1, x2, gamma=0.1):
-    # Calculates similarity between points
-    if x1.ndim == 1 and x2.ndim == 1:
-        return np.exp(-gamma * np.linalg.norm(x1 - x2)**2)
-    # Batch calculation for efficiency
-    sq_dist = np.sum(x1**2, axis=1).reshape(-1, 1) + np.sum(x2**2, axis=1) - 2 * np.dot(x1, x2.T)
-    return np.exp(-gamma * sq_dist)
+    x1 = np.atleast_2d(x1)
+    x2 = np.atleast_2d(x2)
+    
+    # ||a - b||^2 = a^2 + b^2 - 2ab
+    sq_norm1 = np.sum(x1**2, axis=1).reshape(-1, 1)
+    sq_norm2 = np.sum(x2**2, axis=1)
+    
+    sq_dist = sq_norm1 + sq_norm2 - 2 * np.dot(x1, x2.T)
+    
+    K = np.exp(-gamma * sq_dist)
+
+    return K.flatten() if K.shape[1] == 1 or K.shape[0] == 1 else K
 
 def kernel_pegasos(X_train, y_train, lambda1=0.08, gamma=0.1, num_iters=3):
     N = X_train.shape[0]
@@ -68,8 +77,8 @@ def SVM_with_Kernel(X, y):
     X_test_scaled = scaler.transform(X_test)
 
     # Hyperparameters
-    lmbda = 0.08
-    gamma = 0.1 
+    lmbda = 0.001
+    gamma = .1 
     
     alpha, X_train_sv, y_train_sv = kernel_pegasos(X_train_scaled, y_train, lambda1=lmbda, gamma=gamma, num_iters=5)
 
@@ -86,3 +95,11 @@ def SVM_with_Kernel(X, y):
 
     return accuracy, precision, recall
 
+
+X, y, feature_names = load_data("heart.csv")
+feature_names = [f.strip() for f in feature_names]
+accuracy, precision, recall = SVM_with_Kernel(X, y)
+
+print(f"Accuracy:  {accuracy * 100:.2f}%")
+print(f"Precision: {precision * 100:.2f}%")
+print(f"Recall:    {recall * 100:.2f}%")
