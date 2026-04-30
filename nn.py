@@ -107,7 +107,7 @@ architectures  = {
     '3 hidden layers': [13, 9, 9, 9, 1],
 }
 
-print("Architecture\t\tDropout\tAccuracy\tPrecision\tRecall\t\tSpecificity")
+print("Architecture\tDropout\tAccuracy\tPrecision\tRecall\tSpecificity")
 print("-" * 90)
 
 plt.figure(figsize=(10, 6))
