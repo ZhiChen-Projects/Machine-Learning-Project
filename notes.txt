@@ -1,5 +1,0 @@
-- Pre processing - Adithya 
-- Regularization for linear regression - Zhi
-- Write up - Zhi
-- Multiclass class classification model - Adihya
-- NN model - Adithya
